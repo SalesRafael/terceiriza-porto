@@ -5,7 +5,8 @@ import {
   Agendamento,
   Profissional,
   DashboardMetrics,
-  ItemCarrinho
+  ItemCarrinho,
+  GeolocalizacaoPayload
 } from './types';
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -82,7 +83,37 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ nome, email })
     }),
-  getDashboard: () => request<DashboardMetrics>('/api/dashboard')
+  getDashboard: () => request<DashboardMetrics>('/api/dashboard'),
+  getGeolocalizacaoTerceirizados: (lat?: number, lng?: number, status?: string) => {
+    const params = new URLSearchParams();
+    if (typeof lat === 'number') params.set('lat', String(lat));
+    if (typeof lng === 'number') params.set('lng', String(lng));
+    if (status) params.set('status', status);
+    return request<GeolocalizacaoPayload>(
+      `/api/geolocalizacao/terceirizados?${params.toString()}`
+    );
+  },
+  simularMovimentoGps: () =>
+    request<{ mensagem: string; terceirizados: Profissional[] }>(
+      '/api/geolocalizacao/simular-movimento',
+      { method: 'POST' }
+    ),
+  registrarCheckinGps: (
+    id: string,
+    payload: {
+      tipo: 'CHECKIN' | 'DESLOCAMENTO' | 'CHECKOUT';
+      local: string;
+      latitude?: number;
+      longitude?: number;
+    }
+  ) =>
+    request<{ mensagem: string; profissional: Profissional }>(
+      `/api/profissionais/${id}/checkin`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }
+    )
 };
 
 export function formatCurrency(value: number): string {

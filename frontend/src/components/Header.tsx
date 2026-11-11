@@ -158,6 +158,14 @@ export const Header: React.FC<HeaderProps> = ({
             </Link>
 
             <Link
+              to="/mapa-gps"
+              className={`nav-link ${location.pathname === '/mapa-gps' ? 'active' : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              📍 Mapa GPS
+            </Link>
+
+            <Link
               to="/seja-profissional"
               className={`nav-link ${
                 location.pathname === '/seja-profissional' ? 'active' : ''

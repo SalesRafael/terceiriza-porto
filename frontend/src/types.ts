@@ -186,9 +186,19 @@ export interface Agendamento {
   criadoEm: string;
 }
 
+export interface CheckinGps {
+  id: string;
+  tipo: 'CHECKIN' | 'DESLOCAMENTO' | 'CHECKOUT';
+  local: string;
+  latitude: number;
+  longitude: number;
+  horario: string;
+}
+
 export interface Profissional {
   id: string;
   nome: string;
+  funcaoPrincipal?: string;
   genero: string;
   cpf: string;
   celular: string;
@@ -196,7 +206,19 @@ export interface Profissional {
   logradouro: string;
   numero: string;
   bairro: string;
+  distrito?: string;
   cidade: string;
+  latitude?: number;
+  longitude?: number;
+  statusOperacional?: 'DISPONIVEL' | 'EM_DESLOCAMENTO' | 'EM_ATENDIMENTO';
+  clienteAtual?: string;
+  servicoAtual?: string;
+  bateriaNivel?: number;
+  velocidadeKmh?: number;
+  precisaoMetros?: number;
+  distanciaKm?: number;
+  tempoEstimadoMin?: number;
+  historicoCheckins?: CheckinGps[];
   experienciaPrevia: string;
   servicosInteresse: string[];
   modalidadePreferida: string;
@@ -208,6 +230,22 @@ export interface Profissional {
   atendimentosRealizados: number;
   status: 'EM_TRIAGEM' | 'APROVADA' | 'INATIVA';
   criadoEm: string;
+}
+
+export interface GeolocalizacaoPayload {
+  referenciaCliente: { latitude: number; longitude: number };
+  unidadeBase: { latitude: number; longitude: number; endereco: string };
+  pontosReferenciaPortoSeguro: Record<
+    string,
+    { latitude: number; longitude: number; distrito: string }
+  >;
+  resumoOperacional: {
+    totalRastreados: number;
+    disponiveis: number;
+    emAtendimento: number;
+    emDeslocamento: number;
+  };
+  terceirizados: Profissional[];
 }
 
 export interface DashboardMetrics {

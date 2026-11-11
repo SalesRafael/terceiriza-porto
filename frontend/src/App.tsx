@@ -10,6 +10,7 @@ import { UnidadePortoSeguroPage } from './pages/UnidadePortoSeguroPage';
 import { ServicosPage } from './pages/ServicosPage';
 import { SejaProfissionalPage } from './pages/SejaProfissionalPage';
 import { AreaClienteAdminPage } from './pages/AreaClienteAdminPage';
+import { MapaTerceirizadosPage } from './pages/MapaTerceirizadosPage';
 
 export const App: React.FC = () => {
   const [dados, setDados] = useState<UnidadePayload | null>(null);
@@ -121,6 +122,7 @@ export const App: React.FC = () => {
                 />
               }
             />
+            <Route path="/mapa-gps" element={<MapaTerceirizadosPage />} />
             <Route path="/seja-profissional" element={<SejaProfissionalPage />} />
             <Route path="/area-do-cliente" element={<AreaClienteAdminPage />} />
           </Routes>

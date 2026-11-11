@@ -1,4 +1,4 @@
-// Validação de CPF, CEP de Porto Seguro e cálculo de preços
+// Validação de CPF, CEP de Porto Seguro, coordenadas GPS e cálculo de distância Haversine
 
 export function cleanDigits(value = '') {
   return String(value).replace(/\D/g, '');
@@ -26,6 +26,49 @@ export function isValidCPF(cpfInput = '') {
   return rev === parseInt(cpf.charAt(10), 10);
 }
 
+// Coordenadas de referência da Unidade e Bairros/Distritos de Porto Seguro - BA
+export const COORDENADAS_UNIDADE_SAO_FRANCISCO = {
+  latitude: -16.4435,
+  longitude: -39.0682,
+  endereco: 'Rua do Cajueiro, 29 — São Francisco, Porto Seguro - BA'
+};
+
+export const COORDENADAS_PORTO_SEGURO = {
+  'São Francisco': { latitude: -16.4435, longitude: -39.0682, distrito: 'Porto Seguro (Sede)' },
+  'Centro': { latitude: -16.4497, longitude: -39.0647, distrito: 'Porto Seguro (Sede)' },
+  'Taperapuã': { latitude: -16.3942, longitude: -39.0418, distrito: 'Porto Seguro (Sede)' },
+  'Alto Mundaí': { latitude: -16.4165, longitude: -39.0512, distrito: 'Porto Seguro (Sede)' },
+  'Baixo Mundaí': { latitude: -16.4198, longitude: -39.0475, distrito: 'Porto Seguro (Sede)' },
+  'Areião': { latitude: -16.4412, longitude: -39.0628, distrito: 'Porto Seguro (Sede)' },
+  'Campinho': { latitude: -16.4532, longitude: -39.0715, distrito: 'Porto Seguro (Sede)' },
+  'Frei Calixto (Baianão)': { latitude: -16.4388, longitude: -39.0912, distrito: 'Porto Seguro (Sede)' },
+  "Arraial d'Ajuda": { latitude: -16.4912, longitude: -39.0734, distrito: "Arraial d'Ajuda" },
+  'Trancoso': { latitude: -16.5886, longitude: -39.0928, distrito: 'Trancoso' },
+  'Caraíva': { latitude: -16.7965, longitude: -39.1472, distrito: 'Caraíva' },
+  'Vale Verde': { latitude: -16.3821, longitude: -39.1945, distrito: 'Vale Verde' }
+};
+
+// Fórmula de Haversine para distância em quilômetros entre dois pontos GPS
+export function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Raio da Terra em km
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Number((R * c).toFixed(2));
+}
+
+export function calcularTempoDeslocamentoMin(distanciaKm, velocidadeMediaKmh = 28) {
+  const minutos = Math.max(4, Math.round((distanciaKm / velocidadeMediaKmh) * 60));
+  return minutos;
+}
+
 // Mapa de CEPs conhecidos de Porto Seguro - BA (faixa 45810-000 a 45819-999)
 export const PORTO_SEGURO_CEPS = {
   '45810000': {
@@ -34,7 +77,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'São Francisco',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Porto Seguro (Sede)'
+    distrito: 'Porto Seguro (Sede)',
+    latitude: -16.4435,
+    longitude: -39.0682
   },
   '45810001': {
     cep: '45810-001',
@@ -42,7 +87,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Centro',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Porto Seguro (Sede)'
+    distrito: 'Porto Seguro (Sede)',
+    latitude: -16.4497,
+    longitude: -39.0647
   },
   '45810002': {
     cep: '45810-002',
@@ -50,7 +97,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Taperapuã',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Porto Seguro (Sede)'
+    distrito: 'Porto Seguro (Sede)',
+    latitude: -16.3942,
+    longitude: -39.0418
   },
   '45810003': {
     cep: '45810-003',
@@ -58,7 +107,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Areião',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Porto Seguro (Sede)'
+    distrito: 'Porto Seguro (Sede)',
+    latitude: -16.4412,
+    longitude: -39.0628
   },
   '45810004': {
     cep: '45810-004',
@@ -66,7 +117,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Alto Mundaí',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Porto Seguro (Sede)'
+    distrito: 'Porto Seguro (Sede)',
+    latitude: -16.4165,
+    longitude: -39.0512
   },
   '45816000': {
     cep: '45816-000',
@@ -74,7 +127,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: "Arraial d'Ajuda",
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: "Arraial d'Ajuda"
+    distrito: "Arraial d'Ajuda",
+    latitude: -16.4912,
+    longitude: -39.0734
   },
   '45818000': {
     cep: '45818-000',
@@ -82,7 +137,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Trancoso',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Trancoso'
+    distrito: 'Trancoso',
+    latitude: -16.5886,
+    longitude: -39.0928
   },
   '45819000': {
     cep: '45819-000',
@@ -90,7 +147,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Caraíva',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Caraíva'
+    distrito: 'Caraíva',
+    latitude: -16.7965,
+    longitude: -39.1472
   },
   '45814000': {
     cep: '45814-000',
@@ -98,7 +157,9 @@ export const PORTO_SEGURO_CEPS = {
     bairro: 'Vale Verde',
     cidade: 'Porto Seguro',
     uf: 'BA',
-    distrito: 'Vale Verde'
+    distrito: 'Vale Verde',
+    latitude: -16.3821,
+    longitude: -39.1945
   }
 };
 
@@ -134,6 +195,8 @@ export function resolveCepPortoSeguro(rawCep = '') {
       cidade: 'Porto Seguro',
       uf: 'BA',
       distrito: 'Porto Seguro (Sede)',
+      latitude: -16.4435,
+      longitude: -39.0682,
       mensagem: 'CEP dentro da zona de cobertura de Porto Seguro - BA!'
     };
   }
@@ -148,6 +211,8 @@ export function resolveCepPortoSeguro(rawCep = '') {
     cidade: 'Porto Seguro',
     uf: 'BA',
     distrito: 'Sob Consulta Regional',
+    latitude: -16.4435,
+    longitude: -39.0682,
     mensagem: 'CEP registrado. Nossa equipe em São Francisco (Porto Seguro - BA) confirmará a rota de atendimento.'
   };
 }

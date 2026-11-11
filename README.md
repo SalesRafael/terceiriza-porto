@@ -44,8 +44,42 @@ A paleta oficial do sistema homenageia a bandeira e o brasão histórico de Port
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: React 19, TypeScript, React Router 7, Vite 6, CSS Custom Properties (Design System Bandeira de Porto Seguro).
-- **Backend**: Node.js, Express, CORS, Persistência JSON (`backend/src/data/db.json`) com seed automático da unidade Porto Seguro.
+- **Mobile (Flutter)**: Flutter 3.x / Dart 3.x (`mobile_flutter/`), `flutter_map` + `latlong2` (Mapa OpenStreetMap interativo de Porto Seguro), `geolocator` (GPS real do dispositivo + simulador de telemetria), `http` e `url_launcher`.
+- **Frontend Web**: React 19, TypeScript, React Router 7, Vite 6, CSS Custom Properties (Design System Bandeira de Porto Seguro) + **Mapa GPS de Terceirizados** (`/mapa-gps`).
+- **Backend API**: Node.js, Express, CORS, Cálculo de Distância Haversine (`km`) e ETA (`min`), Persistência JSON (`backend/src/data/db.json`) com seed automático da unidade Porto Seguro.
+
+---
+
+## 📱 Aplicativo Mobile Flutter (`mobile_flutter/`) com Geolocalização dos Terceirizados
+
+O aplicativo Flutter possui 4 módulos principais na barra de navegação inferior, estilizados com as cores da Bandeira de Porto Seguro:
+
+1. **Mapa GPS (`lib/screens/mapa_terceirizados_screen.dart`)**:
+   - Mapa interativo de **Porto Seguro — BA** com pinos em tempo real de todos os terceirizados (*Disponível*, *Em Deslocamento*, *Em Atendimento*).
+   - Cálculo automático de distância em quilômetros (`km`) e tempo estimado de chegada (`min`) a partir do **GPS real do usuário** (`Geolocator`) ou de pontos de referência (*São Francisco*, *Centro*, *Orla Taperapuã*, *Alto Mundaí*, *Arraial d'Ajuda*, *Trancoso*, *Caraíva*).
+   - Linha de rota (`PolylineLayer`) conectando o cliente ao terceirizado selecionado e botão **"Simular GPS"** para movimentação em tempo real.
+2. **Diárias R$ 169+ (`lib/screens/diarias_precos_screen.dart`)**:
+   - Todos os 13 pacotes oficiais de Porto Seguro com checkout rápido e vínculo direto com o terceirizado selecionado no radar GPS.
+3. **Orçamento CEP (`lib/screens/orcamento_cep_screen.dart`)**:
+   - Validação de CEP de Porto Seguro, preenchimento automático de bairro/logradouro e geração de protocolo (`TP-2026-XXXX`).
+4. **Check-in GPS (`lib/screens/modo_terceirizado_screen.dart`)**:
+   - Modo dedicado ao profissional terceirizado em campo para transmitir coordenadas GPS, iniciar deslocamento e registrar **Check-in / Check-out Georreferenciado** no endereço do cliente.
+
+### Como executar o App Flutter
+
+```bash
+cd mobile_flutter
+flutter pub get
+flutter run
+```
+
+Para validar análise estática e testes automatizados do Flutter:
+
+```bash
+cd mobile_flutter
+flutter analyze
+flutter test
+```
 
 ---
 
