@@ -1,0 +1,15 @@
+{
+  "name": "terceiriza-porto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema Full-Stack Terceiriza Porto (React + Node.js) - Diaristas, Limpeza Residencial, Comercial e Terceirização em Porto Seguro - BA",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
+  },
+  "author": "Rafael Sales",
+  "license": "MIT"
+}
