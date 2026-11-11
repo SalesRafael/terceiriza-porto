@@ -1,0 +1,49 @@
+name: CI/CD — Terceiriza Porto (AWS ECR)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      ACCOUNT: '204146947607'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Credenciais AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::204146947607:role/licita-github-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login no Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Frontend React
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Build e Push da Imagem Docker no ECR
+        env:
+          ECR: ${{ steps.ecr.outputs.registry }}/terceiriza-porto
+        run: |
+          docker build -t $ECR:latest -t $ECR:${GITHUB_SHA::7} .
+          docker push $ECR:latest
+          docker push $ECR:${GITHUB_SHA::7}

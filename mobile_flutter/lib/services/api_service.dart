@@ -18,7 +18,7 @@ class PontoReferenciaPorto {
 }
 
 class ApiService {
-  static String baseUrl = 'http://localhost:3001/api';
+  static String baseUrl = 'http://100.48.192.161:3001/api';
 
   static const double unidadeLat = -16.4435;
   static const double unidadeLng = -39.0682;
